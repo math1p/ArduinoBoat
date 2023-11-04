@@ -4,6 +4,7 @@
 #include <Dabble.h>
 
 boolean interruptorAtivo = false;
+bool wasSquarePressed, wasCirclePressed, wasCrossPressed, wasTrianglePressed;
 
 // Dabble config
 
@@ -42,43 +43,51 @@ void loop() {
     Serial.print("Right");
   }
 
-  if (GamePad.isSquarePressed())
+  // do this for each button
+  if (GamePad.isSquarePressed())  ///
   {
+    wasSquarePressed = true;  // remember button was pressed
     Serial.print("Square");
     digitalWrite(5, HIGH);
     digitalWrite(6, HIGH);
-  } else{
+  } else if(wasSquarePressed == true){  // here when button is no longer pressed
+    wasSquarePressed = false;
     digitalWrite(5, LOW);
     digitalWrite(6, LOW);
-
   }
 
   if (GamePad.isCirclePressed())
   {
+    wasCirclePressed = true;
     Serial.print("Circle");
     digitalWrite(4, HIGH);
     digitalWrite(7, HIGH);
-  } else{
+  } else if(wasCirclePressed == true){
+    wasCirclePressed = false;
     digitalWrite(4, LOW);
     digitalWrite(7, LOW);
   }
 
   if (GamePad.isCrossPressed())
   {
+    wasCrossPressed = true;
     Serial.print("Cross");
     digitalWrite(5, HIGH);
     digitalWrite(7, HIGH);
-  } else{
+  } else if(wasCrossPressed == true){
+    wasCrossPressed = false;
     digitalWrite(5, LOW);
     digitalWrite(7, LOW);
   }
 
   if (GamePad.isTrianglePressed())
   {
+    wasTrianglePressed = true;
     Serial.print("Triangle");
     digitalWrite(4, HIGH);
     digitalWrite(6, HIGH);
-  } else{
+  } else if(wasTrianglePressed == true){
+    wasTrianglePressed = false;
     digitalWrite(4, LOW);
     digitalWrite(6, LOW);
   }
