@@ -1,14 +1,87 @@
+// Arduino Boat 07/01/2024
+
 #define CUSTOM_SETTINGS
 #define INCLUDE_GAMEPAD_MODULE
 #define INCLUDE_TERMINAL_MODULE
-#include <Dabble.h>
+
+#define DHTTYPE DHT11  // DHT11 Sensor
+
+#include <Dabble.h>  // Dabble Library
+
+// Adafruit Unified Sensor Library: https://github.com/adafruit/Adafruit_Sensor
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
+
+#define DHTPIN 5                   // Arduino pin connect to DHT Sensor
+DHT_Unified dht(DHTPIN, DHTTYPE);  // DHT Sensor config
+uint32_t delayMS;                  // Variable for delay
 
 boolean interruptorAtivo = false;
-bool wasSquarePressed, wasCirclePressed, wasCrossPressed, wasTrianglePressed;
+bool wasLeftPressed, wasRightPressed, wasDownPressed, wasUpPressed;
 
-// Dabble config
+void displayHardwareDetails() {  // Show hardware details in Serial Monitor
+  Serial.println();
+  Serial.println("Inicializando...");
+  delay(500);
+  Serial.println();
+  Serial.print("Microcontrolador usado: ATMEGA328P");  // Arduino microcontroler
+  Serial.print(" operando em ");
+  Serial.print(clockCyclesPerMicrosecond());  // CPU clock
+  Serial.print("MHz");
+  Serial.println();
+  delay(1000);
+  Serial.println("Módulos conectados:");
+  delay(1000);
+  Serial.println("Bluetooth: HM-10 BLE");
+  delay(500);
+  Serial.println("Temperatura e umidade: DHT11");
+  delay(500);
+  Serial.println("Controle dos motores: Ponte H Dupla HG7881 (L9110S)");
+  delay(500);
+  Serial.println("Motores: 2x DC 1.5-3V RE-140RA  ~5700RPM (1.5V) e ~11000RPM (3V)");
+  delay(500);
+  Serial.println("Alimentação: Li-Po 2000mAh 3.7V 1A + 18650 2000mAh 3.7V 1A");
+  Serial.println();
+  delay(1000);
+  Serial.println();
+  dht.begin();  // Start the function (DHT11)
+  Serial.println("Usando o Sensor DHT");
+  sensor_t sensor;
+  dht.temperature().getSensor(&sensor);  // Print DHT11 details - temperature
+  Serial.println("------------------------------------");
+  Serial.println("Temperatura");
+  Serial.print("Sensor:       ");
+  Serial.println(sensor.name);
+  Serial.print("Valor max:    ");
+  Serial.print(sensor.max_value);
+  Serial.println(" *C");
+  Serial.print("Valor min:    ");
+  Serial.print(sensor.min_value);
+  Serial.println(" *C");
+  Serial.print("Resolucao:   ");
+  Serial.print(sensor.resolution);
+  Serial.println(" *C");
+  Serial.println("------------------------------------");
+  dht.humidity().getSensor(&sensor);  // Print DHT11 details - humidity
+  Serial.println("------------------------------------");
+  Serial.println("Umidade");
+  Serial.print("Sensor:       ");
+  Serial.println(sensor.name);
+  Serial.print("Valor max:    ");
+  Serial.print(sensor.max_value);
+  Serial.println("%");
+  Serial.print("Valor min:    ");
+  Serial.print(sensor.min_value);
+  Serial.println("%");
+  Serial.print("Resolucao:   ");
+  Serial.print(sensor.resolution);
+  Serial.println("%");
+  Serial.println("------------------------------------");
+  delayMS = sensor.min_delay / 100;  // delay between readings
+}
 
-void setup() {
+void setup() {  // Dabble config (Bluetooth BLE)
   Serial.begin(9600);
   Dabble.begin(9600);
   pinMode(9, OUTPUT);
@@ -16,110 +89,115 @@ void setup() {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
+  displayHardwareDetails();
 }
 
-// Motor: [ [pin-4]F B-1A ] -- [ [pin-5]Reverse B-1B ] -- [ [pin-6]F A-1A ] -- [ [pin-7]Reverse A-1B ]
+// Motor: [ [pin-4]Foward B-1A ] -- [ [pin-5]Reverse B-1B ] -- [ [pin-6]Foward A-1A ] -- [ [pin-7]Reverse A-1B ]
 
 void loop() {
-  Dabble.processInput(); 
-  Serial.print("KeyPressed: ");
-  if (GamePad.isUpPressed())
-  {
-    Serial.print("UP");
-  }
-
-  if (GamePad.isDownPressed())
-  {
-    Serial.print("DOWN");
-  }
-
-  if (GamePad.isLeftPressed())
-  {
-    Serial.print("Left");
-  }
-
-  if (GamePad.isRightPressed())
-  {
-    Serial.print("Right");
-  }
-
-  // do this for each button
-  if (GamePad.isSquarePressed())  ///
-  {
-    wasSquarePressed = true;  // remember button was pressed
-    Serial.print("Square");
-    digitalWrite(5, HIGH);
-    digitalWrite(6, HIGH);
-  } else if(wasSquarePressed == true){  // here when button is no longer pressed
-    wasSquarePressed = false;
-    digitalWrite(5, LOW);
-    digitalWrite(6, LOW);
-  }
-
-  if (GamePad.isCirclePressed())
-  {
-    wasCirclePressed = true;
-    Serial.print("Circle");
-    digitalWrite(4, HIGH);
-    digitalWrite(7, HIGH);
-  } else if(wasCirclePressed == true){
-    wasCirclePressed = false;
-    digitalWrite(4, LOW);
-    digitalWrite(7, LOW);
-  }
-
-  if (GamePad.isCrossPressed())
-  {
-    wasCrossPressed = true;
-    Serial.print("Cross");
-    digitalWrite(5, HIGH);
-    digitalWrite(7, HIGH);
-  } else if(wasCrossPressed == true){
-    wasCrossPressed = false;
-    digitalWrite(5, LOW);
-    digitalWrite(7, LOW);
-  }
-
-  if (GamePad.isTrianglePressed())
-  {
-    wasTrianglePressed = true;
-    Serial.print("Triangle");
+  Dabble.processInput();  // Dabble gamepad
+  //  Serial.print("KeyPressed: ");
+  if (GamePad.isUpPressed()) {
+    wasUpPressed = true;
+    //    Serial.print("UP");
     digitalWrite(4, HIGH);
     digitalWrite(6, HIGH);
-  } else if(wasTrianglePressed == true){
-    wasTrianglePressed = false;
+  } else if (wasUpPressed == true) {
+    wasUpPressed = false;
     digitalWrite(4, LOW);
     digitalWrite(6, LOW);
   }
 
-  if (GamePad.isStartPressed())
-  {
-    Serial.print("Start");
+  if (GamePad.isDownPressed()) {
+    wasDownPressed = true;
+    //    Serial.print("DOWN");
+    digitalWrite(5, HIGH);
+    digitalWrite(7, HIGH);
+  } else if (wasDownPressed == true) {
+    wasDownPressed = false;
+    digitalWrite(5, LOW);
+    digitalWrite(7, LOW);
   }
 
-  if (GamePad.isSelectPressed()) // Blue LED
+  if (GamePad.isLeftPressed()) {
+    wasLeftPressed = true;  // remember button was pressed
+    // Serial.print("Left");
+    digitalWrite(5, HIGH);
+    digitalWrite(6, HIGH);
+  } else if (wasLeftPressed == true) {  // here when button is no longer pressed
+    wasLeftPressed = false;
+    digitalWrite(5, LOW);
+    digitalWrite(6, LOW);
+  }
+
+  if (GamePad.isRightPressed()) {
+    wasRightPressed = true;
+    // Serial.print("Right");
+    digitalWrite(4, HIGH);
+    digitalWrite(7, HIGH);
+  } else if (wasRightPressed == true) {
+    wasRightPressed = false;
+    digitalWrite(4, LOW);
+    digitalWrite(7, LOW);
+  }
+
+
+
+  if (GamePad.isSquarePressed()) {
+    // Serial.print("Square");
+  }
+
+
+  if (GamePad.isCirclePressed()) {
+    // Serial.print("Circle");
+  }
+
+
+  if (GamePad.isCrossPressed()) {
+    // Serial.print("Cross");
+  }
+
+
+  if (GamePad.isTrianglePressed()) {
+    // Serial.print("Triangle");
+  }
+
+
+  if (GamePad.isStartPressed()) {
+    // Serial.print("Start");
+  }
+
+
+
+  if (GamePad.isSelectPressed())  // Blue LED
   {
-    Serial.print("Select");
+    //    Serial.print("Select");
     interruptorAtivo = !interruptorAtivo;
     digitalWrite(9, interruptorAtivo ? HIGH : LOW);
   }
-  Serial.print('\t');
+  //  Serial.print('\t');
 
-  int a = GamePad.getAngle();
-  Serial.print("Angle: ");
-  Serial.print(a);
-  Serial.print('\t');
-  int b = GamePad.getRadius();
-  Serial.print("Radius: ");
-  Serial.print(b);
-  Serial.print('\t');
-  float c = GamePad.getXaxisData();
-  Serial.print("x_axis: ");
-  Serial.print(c);
-  Serial.print('\t');
-  float d = GamePad.getYaxisData();
-  Serial.print("y_axis: ");
-  Serial.println(d);
-  Serial.println();
-
+  delay(delayMS);                      // atraso entre as medições
+  sensors_event_t event;               // inicializa o evento da Temperatura
+  dht.temperature().getEvent(&event);  // faz a leitura da Temperatura
+  if (isnan(event.temperature))        // se algum erro na leitura
+  {
+    Serial.println("Erro na leitura da Temperatura!");
+  } else  // senão
+  {
+    Serial.print("Temperatura: ");  // imprime a Temperatura
+    Serial.print(event.temperature);
+    Serial.println(" *C");
+    Terminal.print("Temeperatura: ");
+  }
+  dht.humidity().getEvent(&event);     // faz a leitura de umidade
+  if (isnan(event.relative_humidity))  // se algum erro na leitura
+  {
+    Serial.println("Erro na leitura da Umidade!");
+  } else  // senão
+  {
+    Serial.print("Umidade: ");  // imprime a Umidade
+    Serial.print(event.relative_humidity);
+    Serial.println("%");
+  }
 }
