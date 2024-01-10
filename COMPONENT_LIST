@@ -1,13 +1,17 @@
-Microcontroler: Arduino Uno R3 (ATMEGA328)
+Microcontroler: 
+Arduino Uno R3 (ATMEGA328)
 
 Sensors:
 DHT11 - Temperature and humidity
 Termistor NTC - Temperature (for water)
 
-BLuetooth: HM-10 (BLE)
+BLuetooth: 
+HM-10 (BLE) - 10m
 
-Battery:
-18650 3,7V 2000mAh (step-up 5V)
-Li-Po 3,7v 2000mAh (step-up 5V)
+Power supply:
+18650 3,7V 1A 2000mAh - (step-up module for 5V output)
+Li-Po 3,7v 1A 2000mAh - (step-up module for 5V output)
 
 Motor:
+Dual H-Bridge HG7881 (L9110S) - Motor control
+2x DC 1.5-3V RE-140RA ~5700RPM (1.5V) and ~11000RPM (3V)
