@@ -25,26 +25,6 @@ void displayHardwareDetails() {  // Show hardware details in Serial Monitor
   Serial.println("Inicializando...");
   delay(500);
   Serial.println();
-  Serial.print("Microcontrolador usado: ATMEGA328P");  // Arduino microcontroler
-  Serial.print(" operando em ");
-  Serial.print(clockCyclesPerMicrosecond());  // CPU clock
-  Serial.print("MHz");
-  Serial.println();
-  delay(1000);
-  Serial.println("Módulos conectados:");
-  delay(1000);
-  Serial.println("Bluetooth: HM-10 BLE");
-  delay(500);
-  Serial.println("Temperatura e umidade: DHT11");
-  delay(500);
-  Serial.println("Controle dos motores: Ponte H Dupla HG7881 (L9110S)");
-  delay(500);
-  Serial.println("Motores: 2x DC 1.5-3V RE-140RA  ~5700RPM (1.5V) e ~11000RPM (3V)");
-  delay(500);
-  Serial.println("Alimentação: Li-Po 2000mAh 3.7V 1A + 18650 2000mAh 3.7V 1A");
-  Serial.println();
-  delay(1000);
-  Serial.println();
   dht.begin();  // Start the function (DHT11)
   Serial.println("Usando o Sensor DHT");
   sensor_t sensor;
