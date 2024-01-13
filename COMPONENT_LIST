@@ -6,7 +6,7 @@ DHT11 - Temperature and humidity
 Termistor NTC - Temperature (for water)
 
 BLuetooth: 
-HM-10 (BLE) - 10m
+HM-10 - 4.0 BLE
 
 Power supply:
 18650 3,7V 1A 2000mAh - (step-up module for 5V output)
