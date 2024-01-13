@@ -1,5 +1,5 @@
 Microcontroler: 
-Arduino Uno R3 (ATMEGA328)
+Arduino Uno R3 (ATMEGA328P)
 
 Sensors:
 DHT11 - Temperature and humidity
