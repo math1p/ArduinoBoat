@@ -13,7 +13,7 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN 5                   // Arduino pin connect to DHT Sensor
+#define DHTPIN 10                   // Arduino pin connect to DHT Sensor
 DHT_Unified dht(DHTPIN, DHTTYPE);  // DHT Sensor config
 uint32_t delayMS;                  // Variable for delay
 
