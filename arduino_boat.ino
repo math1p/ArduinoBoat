@@ -63,7 +63,7 @@ void displayHardwareDetails() {  // Show hardware details in Serial Monitor
 
 void setup() {  // Dabble config (Bluetooth BLE)
   Serial.begin(9600);
-  Dabble.begin(9600);
+  Dabble.begin(9600);  // PIN2 - TX | PIN3 - RX
   pinMode(9, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
