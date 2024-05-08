@@ -5,6 +5,9 @@
 ## Project status
 
 In final stage of development
+- Motor
+- Wires
+- GitHub page
 
 ## Demonstration
 
